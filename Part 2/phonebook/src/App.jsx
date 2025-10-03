@@ -80,11 +80,13 @@ const App = () => {
   const [message,setMessage] = useState(null)
   const [check, setCheck] = useState(0)
   const [error, setErrorMessage] = useState(null)
+  
 
   const handleDelete = (input) => {
     if(window.confirm(`Delete ${input.name}?`)){
       phoneService.erase(input.id).then((data)=>{
         setPersons(persons.filter(person=>person.id!=data.id))
+        setPersonToShow(persons.filter(person=>(person.name.includes(filter)||person.name.includes(filter.charAt(0).toUpperCase()+filter.slice(1)))))
       })
     }
    
@@ -93,6 +95,8 @@ const App = () => {
   useEffect(()=>{
       phoneService.getAll().then((initialpersons)=>setPersons(initialpersons))
   }, [])
+
+  const [personToShow, setPersonToShow] = useState(persons)
   
   /*
   const addPerson = (event)=>{
@@ -143,6 +147,7 @@ const App = () => {
           phoneService.update(id_1,object).then((data) => {
               
             setPersons(persons.map(p => p.id !== id_1 ? p : data))
+            setPersonToShow(persons.filter(person=>(person.name.includes(filter)||person.name.includes(filter.charAt(0).toUpperCase()+filter.slice(1)))))
             setNewName('')
             setNewNumber('')
           }).catch(error => {
@@ -157,7 +162,9 @@ const App = () => {
       else{
         
         phoneService.create(object).then((data)=>
+          
           {setPersons(persons.concat(data))
+          setPersonToShow(persons.filter(person=>(person.name.includes(filter)||person.name.includes(filter.charAt(0).toUpperCase()+filter.slice(1)))))
           setNewName('')
           setNewNumber('')}).catch(error => {
             setErrorMessage(
@@ -183,7 +190,7 @@ const App = () => {
     setFilter(event.target.value)
   }
 
-  const personToShow = persons.filter(person=>(person.name.includes(filter)||person.name.includes(filter.charAt(0).toUpperCase()+filter.slice(1))))
+  
 
   return (
     <div>
