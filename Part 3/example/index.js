@@ -1,3 +1,5 @@
+
+const Note = require('./models/note')
 const express = require('express')
 const app = express()
 
@@ -32,7 +34,9 @@ app.get('/', (request, response) => {
 })
 
 app.get('/api/notes', (request, response) => {
-  response.json(notes)
+  Note.find({}).then(notes => {
+    response.json(notes)
+  })
 })
 
 
